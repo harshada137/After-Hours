@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8ef">
+  <meta name="description" content="After Hours — travel, places, and the art of living a little slower.">
+  <title>After Hours — Travel, Places, Lifestyle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fff8ef;
+      --ink: #202826;
+      --muted: #59615e;
+      --peach: #ffd9c8;
+      --butter: #f8e9a9;
+      --blue: #c9e3eb;
+      --coral: #e66f55;
+      --line: rgba(32,40,38,.16);
+      --radius: 4px;
+      --page-pad: clamp(1.1rem, 4.8vw, 4.8rem);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "DM Sans", sans-serif; }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
+    img { display: block; max-width: 100%; }
+    .site-header {
+      height: 78px; padding: 0 var(--page-pad); display: flex; align-items: center;
+      justify-content: space-between; gap: 2rem; position: sticky; top: 0; z-index: 20;
+      background: rgba(255,248,239,.92); backdrop-filter: blur(14px); border-bottom: 1px solid transparent;
+      transition: box-shadow .3s, border-color .3s;
+    }
+    .site-header.scrolled { border-color: var(--line); box-shadow: 0 6px 24px rgba(32,40,38,.06); }
+    .brand { font-size: clamp(1.7rem, 3vw, 2.5rem); letter-spacing: -.075em; font-weight: 800; line-height: 1; white-space: nowrap; }
+    .brand-meta { font-size: .62rem; letter-spacing: .19em; text-transform: uppercase; line-height: 1.8; margin-left: 1.3rem; color: var(--muted); white-space: nowrap; }
+    .brand-group { display: flex; align-items: center; }
+    .nav { display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.6rem); font-size: .82rem; }
+    .nav a { position: relative; padding: .45rem 0; }
+    .nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 0; height: 1px; background: currentColor; transition: right .25s; }
+    .nav a:hover::after, .nav a.active::after { right: 0; }
+    .header-actions { display: flex; align-items: center; gap: .7rem; }
+    .icon-button { width: 42px; height: 42px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; display: grid; place-items: center; transition: background .2s; }
+    .icon-button:hover { background: rgba(32,40,38,.07); }
+    .menu-toggle { display: none; }
+    .hero { min-height: min(690px, 76vw); position: relative; overflow: hidden; display: flex; align-items: center; background: #e8c7b5; }
+    .hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 55%; animation: heroIn 1.2s ease both; }
+    .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,224,205,.96) 0%, rgba(255,224,205,.8) 24%, rgba(255,224,205,.22) 49%, rgba(32,40,38,.04) 100%); }
+    .hero-content { position: relative; z-index: 1; padding: 5rem var(--page-pad); max-width: 590px; animation: riseIn .8s .12s both; }
+    .eyebrow { font-size: .68rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    .hero h1 { font-size: clamp(3.7rem, 8vw, 7.8rem); letter-spacing: -.085em; line-height: .88; margin: 1.6rem 0 1.3rem; max-width: 7ch; font-weight: 800; }
+    .hero-copy { max-width: 340px; line-height: 1.65; color: #3e4542; font-size: clamp(.95rem, 1.25vw, 1.08rem); }
+    .round-link { display: inline-flex; align-items: center; gap: .8rem; font-size: .82rem; font-weight: 700; margin-top: .65rem; }
+    .round-link .circle { width: 42px; height: 42px; border: 1px solid currentColor; border-radius: 50%; display: grid; place-items: center; transition: background .25s, color .25s, transform .25s; }
+    .round-link:hover .circle { background: var(--ink); color: white; transform: translateX(4px); }
+    .hero-note { position: absolute; right: 5%; top: 8%; z-index: 2; color: white; font-size: clamp(1.4rem, 2.6vw, 2.8rem); font-weight: 500; font-style: italic; transform: rotate(-9deg); text-align: center; line-height: .95; text-shadow: 0 1px 14px rgba(0,0,0,.2); }
+    .hero-counter { position: absolute; z-index: 2; right: var(--page-pad); bottom: 2rem; display: flex; align-items: center; gap: 1.2rem; color: white; font-size: .72rem; letter-spacing: .12em; }
+    .counter-line { width: 80px; height: 2px; background: rgba(255,255,255,.45); overflow: hidden; }
+    .counter-line span { display: block; height: 100%; width: 25%; background: white; transition: width .35s; }
+    .section { padding: clamp(3.6rem, 7vw, 6.5rem) var(--page-pad); }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 2rem; }
+    .section-heading h2 { font-size: clamp(2.4rem, 4.8vw, 4.5rem); letter-spacing: -.075em; line-height: .92; margin: .8rem 0 0; }
+    .text-link { display: inline-flex; gap: .8rem; align-items: center; border-bottom: 1px solid var(--ink); padding: .4rem 0; font-weight: 700; font-size: .8rem; white-space: nowrap; }
+    .text-link span { transition: transform .2s; }
+    .text-link:hover span { transform: translateX(5px); }
+    .story-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: clamp(1rem, 2vw, 1.8rem); }
+    .story-card { min-width: 0; cursor: pointer; }
+    .story-image-wrap { overflow: hidden; aspect-ratio: 1.08 / 1; background: var(--blue); position: relative; }
+    .story-image-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.65,.2,1); }
+    .story-card:hover img { transform: scale(1.055); }
+    .story-tag { color: var(--coral); font-size: .62rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin: 1rem 0 .6rem; }
+    .story-card:nth-child(2) .story-tag { color: #9d7931; }
+    .story-card:nth-child(3) .story-tag { color: #6a7658; }
+    .story-card:nth-child(4) .story-tag { color: #527eaa; }
+    .story-card h3 { font-size: clamp(1.1rem, 1.65vw, 1.55rem); letter-spacing: -.045em; line-height: 1.13; margin-bottom: .7rem; max-width: 15ch; }
+    .story-card p { color: var(--muted); line-height: 1.55; font-size: .85rem; margin-bottom: .8rem; }
+    .read-time { color: #737a76; font-size: .68rem; }
+    .feature-band { display: grid; grid-template-columns: 1fr 1fr; background: var(--peach); min-height: 430px; }
+    .feature-copy { padding: clamp(2.5rem, 6vw, 5.5rem) var(--page-pad); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; }
+    .feature-copy h2 { font-size: clamp(2.7rem, 5.2vw, 5.4rem); line-height: .92; letter-spacing: -.08em; margin: 1.1rem 0; max-width: 9ch; }
+    .feature-copy p { color: #4e5651; line-height: 1.65; max-width: 340px; }
+    .pill-link { display: inline-flex; align-items: center; gap: 1.1rem; padding: .9rem 1.3rem; background: var(--ink); color: white; border-radius: 99px; font-size: .8rem; font-weight: 700; transition: transform .2s, background .2s; }
+    .pill-link:hover { transform: translateY(-3px); background: #38423e; }
+    .feature-stamp { position: absolute; right: 8%; top: 12%; width: 100px; height: 100px; border: 1px solid var(--ink); border-radius: 50%; display: grid; place-items: center; text-align: center; font-size: .55rem; letter-spacing: .2em; line-height: 1.6; transform: rotate(12deg); }
+    .feature-image { min-height: 360px; overflow: hidden; }
+    .feature-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s; }
+    .feature-band:hover .feature-image img { transform: scale(1.025); }
+    .about-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; border-bottom: 1px solid var(--line); }
+    .about-strip h2 { font-size: clamp(2rem, 4vw, 3.7rem); letter-spacing: -.07em; line-height: .98; margin: .8rem 0 1rem; max-width: 12ch; }
+    .about-strip p { max-width: 450px; color: var(--muted); line-height: 1.7; }
+    .about-note { border-left: 2px solid var(--peach); padding-left: 1.5rem; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.3; }
+    .newsletter { min-height: 330px; position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; padding: 4rem var(--page-pad); color: var(--ink); background: var(--blue); }
+    .newsletter-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .58; }
+    .newsletter::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,248,239,.9), rgba(255,248,239,.62) 50%, rgba(255,248,239,.12)); }
+    .newsletter > *:not(.newsletter-bg) { position: relative; z-index: 1; }
+    .newsletter h2 { font-size: clamp(2rem, 3.5vw, 3.5rem); line-height: .98; letter-spacing: -.07em; max-width: 11ch; margin: .7rem 0; }
+    .newsletter p { max-width: 350px; color: #48524e; line-height: 1.6; font-size: .9rem; margin-bottom: 0; }
+    .signup-form { width: 100%; max-width: 540px; justify-self: end; }
+    .input-row { display: flex; background: rgba(255,248,239,.94); border-radius: 99px; padding: .35rem; box-shadow: 0 8px 35px rgba(32,40,38,.08); }
+    .input-row input { min-width: 0; flex: 1; border: 0; background: transparent; padding: .85rem 1rem; color: var(--ink); outline: 0; }
+    .input-row button { border: 0; background: var(--ink); color: white; border-radius: 99px; padding: .85rem 1.25rem; font-weight: 700; font-size: .78rem; cursor: pointer; transition: background .2s; white-space: nowrap; }
+    .input-row button:hover { background: #46504b; }
+    .consent { display: flex; gap: .55rem; align-items: flex-start; margin: .8rem 0 0 .7rem; font-size: .72rem; color: #39433f; }
+    .consent input { margin-top: .15rem; accent-color: var(--ink); }
+    .form-message { min-height: 1.3em; font-size: .8rem; margin: .7rem 0 0 .7rem; font-weight: 700; }
+    .footer { padding: 2rem var(--page-pad) 1.5rem; }
+    .footer-top { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-bottom: 2rem; }
+    .footer .brand { font-size: 1.8rem; }
+    .footer-meta { display: flex; gap: 1.4rem; align-items: center; font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    .socials { display: flex; align-items: center; gap: 1rem; }
+    .socials a { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; font-size: .75rem; font-weight: 700; transition: background .2s; }
+    .socials a:hover { background: var(--peach); }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 1.5rem; align-items: center; color: var(--muted); font-size: .68rem; }
+    .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .to-top { border: 1px solid var(--ink); border-radius: 50%; width: 40px; height: 40px; display: grid; place-items: center; background: transparent; cursor: pointer; transition: background .2s, color .2s; }
+    .to-top:hover { background: var(--ink); color: white; }
+    .search-panel { position: fixed; z-index: 30; inset: 0; display: none; place-items: start center; padding: 14vh 1.2rem 2rem; background: rgba(32,40,38,.5); backdrop-filter: blur(8px); }
+    .search-panel.open { display: grid; }
+    .search-box { background: var(--paper); width: min(680px, 100%); padding: clamp(1.5rem, 5vw, 3rem); box-shadow: 0 25px 80px rgba(0,0,0,.18); }
+    .search-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .search-top h2 { font-size: 2rem; letter-spacing: -.06em; margin: 0; }
+    .search-input { width: 100%; margin: 1.5rem 0 1rem; padding: 1rem .2rem; border: 0; border-bottom: 1px solid var(--ink); background: transparent; font-size: 1.1rem; outline: 0; }
+    .search-results { display: grid; gap: .7rem; }
+    .search-results a { padding: .75rem 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; font-weight: 700; }
+    .search-results small { color: var(--muted); font-weight: 400; }
+    .story-modal { position: fixed; inset: 0; z-index: 40; display: none; place-items: center; padding: 1.2rem; background: rgba(32,40,38,.62); backdrop-filter: blur(7px); }
+    .story-modal.open { display: grid; }
+    .modal-card { width: min(760px, 100%); max-height: 90vh; overflow: auto; background: var(--paper); position: relative; }
+    .modal-card img { width: 100%; max-height: 360px; object-fit: cover; }
+    .modal-content { padding: clamp(1.5rem, 4vw, 3rem); }
+    .modal-content h2 { font-size: clamp(2rem, 5vw, 3.8rem); line-height: .95; letter-spacing: -.07em; margin: .8rem 0 1rem; }
+    .modal-content p { color: var(--muted); line-height: 1.75; }
+    .modal-close { position: absolute; top: .8rem; right: .8rem; background: var(--paper); box-shadow: 0 2px 10px #0002; }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.65,.2,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .story-card.reveal:nth-child(2) { transition-delay: .08s; }
+    .story-card.reveal:nth-child(3) { transition-delay: .16s; }
+    .story-card.reveal:nth-child(4) { transition-delay: .24s; }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes heroIn { from { transform: scale(1.035); opacity: .7; } to { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+    @media (max-width: 900px) {
+      .brand-meta { display: none; }
+      .site-header { gap: 1rem; }
+      .nav { gap: 1.2rem; }
+      .story-grid { grid-template-columns: repeat(2, minmax(0,1fr)); row-gap: 2.5rem; }
+      .feature-band { min-height: 380px; }
+      .feature-stamp { width: 78px; height: 78px; right: 6%; font-size: .46rem; }
+    }
+    @media (max-width: 640px) {
+      .site-header { height: 68px; }
+      .brand { font-size: 1.9rem; }
+      .menu-toggle { display: grid; }
+      .nav { position: fixed; inset: 68px 0 auto; padding: 1.3rem var(--page-pad) 1.8rem; background: var(--paper); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: stretch; gap: .3rem; transform: translateY(-130%); opacity: 0; pointer-events: none; transition: transform .3s ease, opacity .3s; }
+      .nav.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+      .nav a { padding: .9rem 0; border-bottom: 1px solid var(--line); font-size: 1rem; }
+      .hero { min-height: 680px; align-items: end; }
+      .hero-image { object-position: 61% center; }
+      .hero::after { background: linear-gradient(0deg, rgba(255,224,205,.98) 0%, rgba(255,224,205,.92) 31%, rgba(255,224,205,.18) 74%, rgba(32,40,38,.05) 100%); }
+      .hero-content { padding-top: 14rem; padding-bottom: 4.5rem; }
+      .hero h1 { font-size: clamp(3.8rem, 16vw, 5.6rem); max-width: 8ch; }
+      .hero-note { top: 7%; right: 7%; font-size: 1.8rem; }
+      .hero-counter { bottom: 1.4rem; }
+      .section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+      .section-heading { align-items: flex-start; }
+      .section-heading .text-link { margin-top: .5rem; }
+      .story-grid { gap: 2rem 1rem; }
+      .story-image-wrap { aspect-ratio: .92 / 1; }
+      .story-card h3 { font-size: 1.15rem; }
+      .story-card p { font-size: .8rem; }
+      .feature-band { grid-template-columns: 1fr; }
+      .feature-copy { min-height: 360px; padding: 3rem var(--page-pad); }
+      .feature-copy h2 { max-width: 8ch; font-size: 3.5rem; }
+      .feature-image { min-height: 300px; }
+      .about-strip { grid-template-columns: 1fr; gap: 1.5rem; }
+      .about-note { margin-bottom: .5rem; }
+      .newsletter { grid-template-columns: 1fr; gap: 2rem; padding-top: 3.5rem; padding-bottom: 3.5rem; }
+      .signup-form { justify-self: stretch; }
+      .footer-top, .footer-bottom { align-items: flex-start; flex-direction: column; }
+      .footer-meta { gap: .8rem; }
+      .footer-bottom { gap: 1.2rem; }
+      .input-row { border-radius: 18px; align-items: stretch; flex-direction: column; padding: .4rem; }
+      .input-row input { padding: .85rem .9rem; }
+      .input-row button { padding: .9rem; }
+    }
+    @media (max-width: 380px) {
+      .story-grid { grid-template-columns: 1fr; }
+      .story-image-wrap { aspect-ratio: 1.2 / 1; }
+      .section-heading { flex-direction: column; }
+      .hero h1 { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="brand-group">
+      <a class="brand" href="#home" aria-label="After Hours home">After Hours</a>
+      <div class="brand-meta">Travel&nbsp; / &nbsp;Places&nbsp; / &nbsp;Lifestyle</div>
+    </div>
+    <nav class="nav" id="site-nav" aria-label="Main navigation">
+      <a href="#home" class="active">Home</a>
+      <a href="#stories">Stories</a>
+      <a href="#about">About</a>
+      <a href="#subscribe">Subscribe</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="search-open" aria-label="Search stories" title="Search stories">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+      </button>
+      <button class="icon-button menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="site-nav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <img class="hero-image" src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=2200&q=88" alt="Sunlit Mediterranean coastline with colorful houses and blue sea">
+      <div class="hero-content">
+        <div class="eyebrow">Featured story&nbsp; / &nbsp;Issue 04</div>
+        <h1 id="hero-title">The Slow Life in Amalfi</h1>
+        <p class="hero-copy">Sun-drenched cliffs, quiet mornings and a slower pace — discover why the best trips are the ones that leave room to wander.</p>
+        <a class="round-link" href="#stories"><span class="circle" aria-hidden="true">↗</span><span>Read the story</span></a>
+      </div>
+      <div class="hero-note" aria-hidden="true">Good<br>vibes<br>only.</div>
+      <div class="hero-counter"><span>01 / 04</span><div class="counter-line"><span></span></div></div>
+    </section>
+
+    <section class="section" id="stories">
+      <div class="section-heading reveal">
+        <div><div class="eyebrow">A little inspiration</div><h2>Latest<br>Stories</h2></div>
+        <a class="text-link" href="#story-grid">View all stories <span>→</span></a>
+      </div>
+      <div class="story-grid" id="story-grid">
+        <article class="story-card reveal" tabindex="0" role="button" data-story="coast">
+          <div class="story-image-wrap"><img loading="lazy" src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=850&q=85" alt="Colorful coastal village perched above the sea"></div>
+          <div class="story-tag">Places</div><h3>Hidden Corners of the Italian Coast</h3>
+          <p>Beyond the famous towns, there are quieter spots worth the detour.</p><div class="read-time">4 min read&nbsp; ↗</div>
+        </article>
+        <article class="story-card reveal" tabindex="0" role="button" data-story="food">
+          <div class="story-image-wrap"><img loading="lazy" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=850&q=85" alt="A relaxed outdoor table with food and drinks"></div>
+          <div class="story-tag">Food</div><h3>The Art of Simple Meals</h3>
+          <p>Fresh ingredients, local flavors and the joy of eating slowly.</p><div class="read-time">5 min read&nbsp; ↗</div>
+        </article>
+        <article class="story-card reveal" tabindex="0" role="button" data-story="design">
+          <div class="story-image-wrap"><img loading="lazy" src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=850&q=85" alt="Warm, minimal contemporary interior with natural materials"></div>
+          <div class="story-tag">Lifestyle</div><h3>Designing a Life You Love</h3>
+          <p>Small rituals, intentional spaces and a more mindful everyday.</p><div class="read-time">6 min read&nbsp; ↗</div>
+        </article>
+        <article class="story-card reveal" tabindex="0" role="button" data-story="road">
+          <div class="story-image-wrap"><img loading="lazy" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=850&q=85" alt="Open mountain road and wide scenic landscape"></div>
+          <div class="story-tag">Travel</div><h3>Road Trips That Heal</h3>
+          <p>Open roads, new perspectives and the freedom to explore.</p><div class="read-time">4 min read&nbsp; ↗</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="feature-band" id="guide">
+      <div class="feature-copy">
+        <div class="eyebrow">The seasonal edit&nbsp; / &nbsp;Travel</div>
+        <h2>The Best Places to Visit This Summer</h2>
+        <p>From coastal towns to mountain escapes, these are the destinations that deserve a spot on your summer list.</p>
+        <a class="pill-link" href="#stories">Explore the guide <span>→</span></a>
+        <div class="feature-stamp" aria-hidden="true">TRAVEL MORE<br>☼<br>WORRY LESS</div>
+      </div>
+      <div class="feature-image"><img loading="lazy" src="https://images.unsplash.com/photo-1498307833015-e7b400441eb8?auto=format&fit=crop&w=1400&q=88" alt="Terrace overlooking a bright blue Mediterranean sea"></div>
+    </section>
+
+    <section class="section about-strip reveal" id="about">
+      <div>
+        <div class="eyebrow">A note from us</div>
+        <h2>For the places that stay with you.</h2>
+        <p>After Hours is an independent journal for curious people and considered living. We collect places, small pleasures, good design, and stories that remind us to take the scenic route.</p>
+      </div>
+      <div class="about-note">“Life feels a little bigger when you make room to get lost.”</div>
+    </section>
+
+    <section class="newsletter" id="subscribe">
+      <img class="newsletter-bg" loading="lazy" src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1800&q=85" alt="">
+      <div>
+        <div class="eyebrow">Stay in the loop</div>
+        <h2>Get the best of After Hours, straight to your inbox.</h2>
+        <p>Travel tips, hidden gems, and lifestyle inspiration — curated for your next adventure.</p>
+      </div>
+      <form class="signup-form" id="signup-form" novalidate>
+        <div class="input-row">
+          <input id="email" name="email" type="email" placeholder="Your email address" autocomplete="email" aria-label="Your email address" required>
+          <button type="submit">Subscribe&nbsp; ↗</button>
+        </div>
+        <label class="consent"><input id="consent" type="checkbox" required><span>I agree to receive the After Hours newsletter.</span></label>
+        <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <a class="brand" href="#home">After Hours</a>
+      <div class="footer-meta">Travel&nbsp; / &nbsp;Places&nbsp; / &nbsp;Lifestyle</div>
+      <div class="socials" aria-label="Social links">
+        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">ig</a>
+        <a href="https://www.pinterest.com/" target="_blank" rel="noreferrer" aria-label="Pinterest">p</a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> After Hours. Made for the curious.</span>
+      <div class="footer-links"><a href="#about">About</a><a href="mailto:hello@afterhours.example">Contact</a><a href="#subscribe">Newsletter</a></div>
+      <button class="to-top" id="to-top" aria-label="Back to top">↑</button>
+    </div>
+  </footer>
+
+  <div class="search-panel" id="search-panel" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <div class="search-box">
+      <div class="search-top"><h2 id="search-title">Find a story.</h2><button class="icon-button" id="search-close" aria-label="Close search">✕</button></div>
+      <input class="search-input" id="search-input" type="search" placeholder="Try “coast”, “food”, or “travel”…" autocomplete="off">
+      <div class="search-results" id="search-results"></div>
+    </div>
+  </div>
+
+  <div class="story-modal" id="story-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <button class="icon-button modal-close" id="modal-close" aria-label="Close story">✕</button>
+      <img id="modal-image" src="" alt="">
+      <div class="modal-content"><div class="eyebrow" id="modal-tag"></div><h2 id="modal-title"></h2><p id="modal-body"></p><a class="text-link" href="#subscribe" id="modal-subscribe">Get more stories <span>→</span></a></div>
+    </div>
+  </div>
+
+  <script>
+    const header = document.querySelector('.site-header');
+    const nav = document.querySelector('#site-nav');
+    const menuToggle = document.querySelector('#menu-toggle');
+    const searchPanel = document.querySelector('#search-panel');
+    const searchInput = document.querySelector('#search-input');
+    const searchResults = document.querySelector('#search-results');
+    const storyModal = document.querySelector('#story-modal');
+    let lastFocused = null;
+
+    const stories = [
+      { id: 'coast', title: 'Hidden Corners of the Italian Coast', tag: 'Places', image: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=85', alt: 'Colorful coastal village perched above the sea', body: 'The best corners of the coast rarely announce themselves. They are the little stairways that lead away from the crowds, the family-run café with three tables, and the quiet cove you find by following the sound of the water. Leave a little space in your itinerary and let curiosity do the planning.' },
+      { id: 'food', title: 'The Art of Simple Meals', tag: 'Food', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=85', alt: 'A relaxed outdoor table with food and drinks', body: 'A memorable meal does not need a long ingredient list. Buy what looks good at the local market, find a shady table, and let the day set the pace. A ripe tomato, good bread, olive oil, and the people around the table can be more than enough.' },
+      { id: 'design', title: 'Designing a Life You Love', tag: 'Lifestyle', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85', alt: 'Warm, minimal contemporary interior with natural materials', body: 'The spaces we return to shape the rhythm of our days. A favourite chair near the window, a clear kitchen counter, a few objects collected on a journey — small, personal choices can make a home feel more like your own. Start with what you use and love.' },
+      { id: 'road', title: 'Road Trips That Heal', tag: 'Travel', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=85', alt: 'Open mountain road and wide scenic landscape', body: 'There is something restorative about a road with no urgent destination. Pack lightly, download a map, make a playlist, and stop when a view asks you to. The point is not to cover the most miles; it is to come home with a different perspective.' }
+    ];
+
+    function setMenu(open) {
+      nav.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    }
+    menuToggle.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+    nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 12);
+      const sections = ['home', 'stories', 'about', 'subscribe'].map(id => document.getElementById(id));
+      let current = 'home';
+      sections.forEach(section => { if (section && window.scrollY >= section.offsetTop - 130) current = section.id; });
+      nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    }, { passive: true });
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    function openSearch() {
+      lastFocused = document.activeElement;
+      searchPanel.classList.add('open');
+      searchInput.value = '';
+      renderSearch('');
+      setTimeout(() => searchInput.focus(), 30);
+    }
+    function closeSearch() {
+      searchPanel.classList.remove('open');
+      if (lastFocused) lastFocused.focus();
+    }
+    document.querySelector('#search-open').addEventListener('click', openSearch);
+    document.querySelector('#search-close').addEventListener('click', closeSearch);
+    searchPanel.addEventListener('click', e => { if (e.target === searchPanel) closeSearch(); });
+    function renderSearch(query) {
+      const q = query.trim().toLowerCase();
+      const matches = stories.filter(s => (s.title + ' ' + s.tag + ' ' + s.body).toLowerCase().includes(q));
+      searchResults.innerHTML = '';
+      if (!matches.length) { searchResults.innerHTML = '<p>No stories found. Try another word.</p>'; return; }
+      matches.forEach(s => {
+        const link = document.createElement('a');
+        link.href = '#stories';
+        const title = document.createElement('span'); title.textContent = s.title;
+        const tag = document.createElement('small'); tag.textContent = s.tag;
+        link.append(title, tag);
+        link.addEventListener('click', e => { e.preventDefault(); closeSearch(); openStory(s.id); });
+        searchResults.appendChild(link);
+      });
+    }
+    searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+
+    function openStory(id) {
+      const story = stories.find(s => s.id === id);
+      if (!story) return;
+      lastFocused = document.activeElement;
+      document.querySelector('#modal-image').src = story.image;
+      document.querySelector('#modal-image').alt = story.alt;
+      document.querySelector('#modal-tag').textContent = story.tag + ' / Editor’s pick';
+      document.querySelector('#modal-title').textContent = story.title;
+      document.querySelector('#modal-body').textContent = story.body;
+      storyModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.querySelector('#modal-close').focus();
+    }
+    function closeStory() {
+      storyModal.classList.remove('open');
+      document.body.style.overflow = '';
+      if (lastFocused) lastFocused.focus();
+    }
+    document.querySelectorAll('[data-story]').forEach(card => {
+      card.addEventListener('click', () => openStory(card.dataset.story));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStory(card.dataset.story); } });
+    });
+    document.querySelector('#modal-close').addEventListener('click', closeStory);
+    storyModal.addEventListener('click', e => { if (e.target === storyModal) closeStory(); });
+    document.querySelector('#modal-subscribe').addEventListener('click', closeStory);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeSearch(); closeStory(); setMenu(false); }
+    });
+
+    document.querySelector('#signup-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.querySelector('#email');
+      const consent = document.querySelector('#consent');
+      const message = document.querySelector('#form-message');
+      if (!email.validity.valid || !email.value.trim()) {
+        message.textContent = 'Please enter a valid email address.';
+        message.style.color = '#a6382e';
+        email.focus();
+        return;
+      }
+      if (!consent.checked) {
+        message.textContent = 'Please tick the consent box to continue.';
+        message.style.color = '#a6382e';
+        consent.focus();
+        return;
+      }
+      message.textContent = 'You’re on the list — thanks for joining After Hours!';
+      message.style.color = '#285d43';
+      e.target.reset();
+    });
+    document.querySelector('#to-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    document.querySelector('#year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
