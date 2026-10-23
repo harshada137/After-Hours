@@ -19,7 +19,7 @@ No build step or package installation is required. The page uses Google Fonts an
 
 ## Website Preview
 
-![After Hours magazine website screenshot](screenshot.png)
+![After Hours magazine website screenshot](./screenshot.png)
 
 ## Note
 The newsletter form is front-end only: it validates the address and displays a success message, but it does not save subscribers or send email. Connect it to your backend or an email marketing service for real subscriptions.
